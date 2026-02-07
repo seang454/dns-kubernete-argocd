@@ -1,0 +1,25 @@
+# This file defines a ClusterIssuer resource for cert-manager to use Let's Encrypt for issuing TLS certificates.
+# ClusterIssuer: talks to Let's Encrypt
+
+# API version for cert-manager resources that manage certificates in Kubernetes but make sure we already 
+# Specifies the API version for the cert-manager resources.
+# This file configures cert-manager to talk to Let’s Encrypt (production) so it can:
+    # Request TLS certificates
+    # Validate domain ownership
+    # Automatically renew certificates before they expire
+apiVersion: cert-manager.io/v1 
+kind: ClusterIssuer # Defines a ClusterIssuer resource for issuing certificates cluster-wide
+metadata:
+  name: letsencrypt-prod # Name of the ClusterIssuer and the secret to store the private key
+  namespace: cert-manager # Namespace where cert-manager is installed
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: pengseangsim210@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-prod # Secret to store the private key for this ClusterIssuer
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+

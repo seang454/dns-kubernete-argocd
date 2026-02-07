@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-ingress
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "argocd-letsencrypt-prod"
+    kubernetes.io/ingressClassName: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      #Why you'd use it: nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      # This annotation tells the NGINX ingress controller to automatically redirect all HTTP traffic to HTTPS.
+      # Security: Forces users to always use encrypted connections
+      # Best practice: Prevents accidental unencrypted access to sensitive applications like ArgoCD
+      # HSTS: Often combined with other security headers
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"  # ArgoCD serves HTTP internally
+spec:
+  ingressClassName: "nginx"
+  tls:
+    - hosts:
+        - argocd.seang.shop
+      secretName: argocd-tls
+  rules: 
+    - host: argocd.seang.shop
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: argocd-server
+                port: 
+                  number: 80  # Still use port 80 (HTTP internally)

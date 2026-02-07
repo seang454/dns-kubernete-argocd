@@ -1,0 +1,29 @@
+
+# this the standard ingress resource for kubernetes dashboard with tls enabled with anotations for cert-manager to use the letsencrypt clusterissuer
+# example : cert-manager.io/cluster-issuer: "letsencrypt-prod"
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubernetes-dashboard-ingress
+  namespace: kube-system # # <- match certificate namespace
+  annotations:
+    kubernetes.io/ingressClassName: "nginx"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # Dashboard service listens on 443 by default, so you’d need to enable the HTTP port on the dashboard deployment
+spec:
+  ingressClassName: "nginx"
+  # When someone accesses https://kubernetes.dashboard.seang.shop, terminate TLS using the certificate stored in the dashboard-tls secret. HTTPS enabled
+  tls:
+  - hosts:
+    - kubernetes.dashboard.seang.shop
+    secretName: dashboard-tls
+  rules:
+  - host: kubernetes.dashboard.seang.shop
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kubernetes-dashboard 
+            port:
+              number: 443

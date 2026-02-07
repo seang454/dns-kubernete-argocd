@@ -1,0 +1,18 @@
+# This file defines a Certificate resource for cert-manager to issue TLS certificates.
+# Certificate: requests cert for your domain
+# this standalone certificate resource can be used if you don't want to use ingress resource to request certs
+# Please issue a TLS certificate for kubernetes.dashboard.seang.shop using Let’s Encrypt, and store it as a Kubernetes Secret.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dashboard-cert # name of the certificate resource
+  namespace: kube-system
+  # annotations: # it do not rely on ingress annotations
+  #   kubernetes.io/ingress.class: "nginx"
+spec:
+  dnsNames:
+    - "kubernetes.dashboard.seang.shop"
+  secretName: dashboard-tls # name of the secret to store the issued certificate
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
