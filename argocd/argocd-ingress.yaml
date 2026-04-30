@@ -14,7 +14,9 @@ metadata:
       # Security: Forces users to always use encrypted connections
       # Best practice: Prevents accidental unencrypted access to sensitive applications like ArgoCD
       # HSTS: Often combined with other security headers
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"  # ArgoCD serves HTTP internally
+    # Argo CD serves HTTPS internally by default. Using HTTP here causes
+    # Argo CD to redirect back to HTTPS and creates a browser redirect loop.
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   ingressClassName: "nginx"
   tls:
@@ -31,4 +33,4 @@ spec:
               service:
                 name: argocd-server
                 port: 
-                  number: 80  # Still use port 80 (HTTP internally)
+                  number: 443

@@ -14,6 +14,10 @@
     2. kubectl apply -f argocd-ingress.yaml
 
 ```
+
+Important:
+- The provided Argo CD ingress now forwards to `argocd-server` over `HTTPS` on port `443`.
+- If you ever change the ingress backend to plain `HTTP`, you must also set Argo CD `server.insecure: "true"` or you will get `ERR_TOO_MANY_REDIRECTS`.
 --------------------------------------------------------------
 # kubernete Dashboard
 --------------------------------------------------------------
